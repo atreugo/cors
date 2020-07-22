@@ -112,22 +112,22 @@ func Test_New(t *testing.T) { //nolint:funlen
 			ctx := new(atreugo.RequestCtx)
 			ctx.RequestCtx = new(fasthttp.RequestCtx)
 
-			ctx.Request.Header.Set(originHeaderName, tt.want.origin)
+			ctx.Request.Header.Set(fasthttp.HeaderOrigin, tt.want.origin)
 			ctx.Request.Header.SetMethod(tt.args.method)
-			ctx.Response.Header.Set(varyHeaderName, tt.args.vary)
+			ctx.Response.Header.Set(fasthttp.HeaderVary, tt.args.vary)
 
 			if err := m(ctx); err != nil {
 				t.Fatalf("Unexpected error: %v", err)
 			}
 
 			wantHeadersValue := map[string]string{
-				varyHeaderName:             tt.want.vary,
-				allowOriginHeaderName:      tt.want.origin,
-				allowCredentialsHeaderName: tt.want.allowCredentials,
-				allowHeadersHeaderName:     tt.want.allowedHeaders,
-				allowMethodsHeaderName:     tt.want.allowedMethods,
-				exposeHeadersHeaderName:    tt.want.exposedHeaders,
-				maxAgeHeaderName:           tt.want.allowMaxAge,
+				fasthttp.HeaderVary:                          tt.want.vary,
+				fasthttp.HeaderAccessControlAllowOrigin:      tt.want.origin,
+				fasthttp.HeaderAccessControlAllowCredentials: tt.want.allowCredentials,
+				fasthttp.HeaderAccessControlAllowHeaders:     tt.want.allowedHeaders,
+				fasthttp.HeaderAccessControlAllowMethods:     tt.want.allowedMethods,
+				fasthttp.HeaderAccessControlExposeHeaders:    tt.want.exposedHeaders,
+				fasthttp.HeaderAccessControlMaxAge:           tt.want.allowMaxAge,
 			}
 
 			for headerName, want := range wantHeadersValue {

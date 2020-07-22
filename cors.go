@@ -10,16 +10,6 @@ import (
 
 const strHeaderDelim = ", "
 
-const allowOriginHeaderName = "Access-Control-Allow-Origin"
-const allowCredentialsHeaderName = "Access-Control-Allow-Credentials"
-const allowHeadersHeaderName = "Access-Control-Allow-Headers"
-const allowMethodsHeaderName = "Access-Control-Allow-Methods"
-const exposeHeadersHeaderName = "Access-Control-Expose-Headers"
-const maxAgeHeaderName = "Access-Control-Max-Age"
-
-const varyHeaderName = "Vary"
-const originHeaderName = "Origin"
-
 // Config configuration.
 type Config struct {
 	// Specifies either the origins, which tells browsers to allow that origin
@@ -71,28 +61,28 @@ func New(cfg Config) atreugo.Middleware {
 	maxAge := strconv.Itoa(cfg.AllowMaxAge)
 
 	return func(ctx *atreugo.RequestCtx) error {
-		origin := string(ctx.Request.Header.Peek(originHeaderName))
+		origin := string(ctx.Request.Header.Peek(fasthttp.HeaderOrigin))
 
 		if !isAllowedOrigin(cfg.AllowedOrigins, origin) {
 			return ctx.Next()
 		}
 
-		ctx.Response.Header.Set(allowOriginHeaderName, origin)
+		ctx.Response.Header.Set(fasthttp.HeaderAccessControlAllowOrigin, origin)
 
 		if cfg.AllowCredentials {
-			ctx.Response.Header.Set(allowCredentialsHeaderName, "true")
+			ctx.Response.Header.Set(fasthttp.HeaderAccessControlAllowCredentials, "true")
 		}
 
-		varyHeader := ctx.Response.Header.Peek(varyHeaderName)
+		varyHeader := ctx.Response.Header.Peek(fasthttp.HeaderVary)
 		if len(varyHeader) > 0 {
 			varyHeader = append(varyHeader, strHeaderDelim...)
 		}
 
-		varyHeader = append(varyHeader, originHeaderName...)
-		ctx.Response.Header.SetBytesV(varyHeaderName, varyHeader)
+		varyHeader = append(varyHeader, fasthttp.HeaderOrigin...)
+		ctx.Response.Header.SetBytesV(fasthttp.HeaderVary, varyHeader)
 
 		if len(cfg.ExposedHeaders) > 0 {
-			ctx.Response.Header.Set(exposeHeadersHeaderName, exposedHeaders)
+			ctx.Response.Header.Set(fasthttp.HeaderAccessControlExposeHeaders, exposedHeaders)
 		}
 
 		method := string(ctx.Method())
@@ -101,15 +91,15 @@ func New(cfg Config) atreugo.Middleware {
 		}
 
 		if len(cfg.AllowedHeaders) > 0 {
-			ctx.Response.Header.Set(allowHeadersHeaderName, allowedHeaders)
+			ctx.Response.Header.Set(fasthttp.HeaderAccessControlAllowHeaders, allowedHeaders)
 		}
 
 		if len(cfg.AllowedMethods) > 0 {
-			ctx.Response.Header.Set(allowMethodsHeaderName, allowedMethods)
+			ctx.Response.Header.Set(fasthttp.HeaderAccessControlAllowMethods, allowedMethods)
 		}
 
 		if cfg.AllowMaxAge > 0 {
-			ctx.Response.Header.Set(maxAgeHeaderName, maxAge)
+			ctx.Response.Header.Set(fasthttp.HeaderAccessControlMaxAge, maxAge)
 		}
 
 		return ctx.Next()
