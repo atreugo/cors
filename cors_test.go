@@ -107,6 +107,8 @@ func Test_New(t *testing.T) { //nolint:funlen
 		tt := test
 
 		t.Run("", func(t *testing.T) {
+			t.Helper()
+
 			m := New(tt.args.cfg)
 
 			ctx := new(atreugo.RequestCtx)
