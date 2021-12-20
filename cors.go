@@ -64,7 +64,7 @@ func New(cfg Config) atreugo.Middleware {
 		origin := string(ctx.Request.Header.Peek(fasthttp.HeaderOrigin))
 
 		if !isAllowedOrigin(cfg.AllowedOrigins, origin) {
-			return ctx.Next()
+			return ctx.Next() // nolint:wrapcheck
 		}
 
 		ctx.Response.Header.Set(fasthttp.HeaderAccessControlAllowOrigin, origin)
@@ -87,7 +87,7 @@ func New(cfg Config) atreugo.Middleware {
 
 		method := string(ctx.Method())
 		if method != fasthttp.MethodOptions {
-			return ctx.Next()
+			return ctx.Next() // nolint:wrapcheck
 		}
 
 		if len(cfg.AllowedHeaders) > 0 {
@@ -102,6 +102,6 @@ func New(cfg Config) atreugo.Middleware {
 			ctx.Response.Header.Set(fasthttp.HeaderAccessControlMaxAge, maxAge)
 		}
 
-		return ctx.Next()
+		return ctx.Next() // nolint:wrapcheck
 	}
 }

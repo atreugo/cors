@@ -9,4 +9,4 @@ linters:
     - exhaustivestruct
     - paralleltest
     - nolintlint
-    - wrapcheck
+    - varnamelen
