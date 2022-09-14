@@ -9,4 +9,19 @@ linters:
     - exhaustivestruct
     - paralleltest
     - nolintlint
+    - cyclop
     - varnamelen
+    - ireturn
+    - nonamedreturns
+    - exhaustruct
+
+    # Deprecated
+    - maligned
+    - scopelint
+    - golint
+    - interfacer
+    - structcheck
+    - varcheck
+    - nosnakecase
+    - ifshort
+    - deadcode
